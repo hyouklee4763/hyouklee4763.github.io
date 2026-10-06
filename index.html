@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>예진미디어 · 영상 종편실</title>
+<meta name="description" content="예진미디어 영상 종편실. Final Cut, After Effects, Motion, Photoshop. 서울. 010-3333-4763" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<style>
+  :root { --bg:#10110e; --surface:#181b14; --fg:#f4efe4; --muted:#b2ab9c; --accent:#d6ff3e; --ink:#14160c; --line:#2e3326; }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin:0; background:var(--bg); color:var(--fg); font-family:Pretendard,"Apple SD Gothic Neo",sans-serif; line-height:1.55; -webkit-font-smoothing:antialiased; }
+  a { color:inherit; text-decoration:none; }
+  img { max-width:100%; display:block; }
+  .wrap { width:min(1120px, calc(100% - 40px)); margin:0 auto; }
+  header { position:sticky; top:0; z-index:20; background:rgba(16,17,14,.82); backdrop-filter:blur(16px); border-bottom:1px solid var(--line); }
+  .nav { display:flex; align-items:center; justify-content:space-between; height:64px; }
+  .logo small { display:block; color:var(--muted); font-size:11px; letter-spacing:.08em; }
+  nav a { color:var(--muted); margin-left:22px; font-size:14px; }
+  .btn { display:inline-flex; align-items:center; justify-content:center; height:44px; padding:0 18px; border-radius:999px; background:var(--accent); color:var(--ink); font-weight:800; border:0; font-family:inherit; font-size:14px; cursor:pointer; }
+  .ghost { background:transparent; color:var(--fg); border:1px solid var(--line); }
+  h1 { font-size:clamp(40px,6vw,72px); line-height:.98; letter-spacing:-.05em; margin:14px 0 16px; }
+  h2 { font-size:clamp(28px,4vw,40px); letter-spacing:-.04em; margin:0 0 8px; }
+  .muted { color:var(--muted); }
+  .kicker { color:var(--accent); font-size:13px; letter-spacing:.14em; font-weight:800; }
+  section { padding:64px 0; }
+  .hero { padding:72px 0 24px; }
+  .row { display:flex; gap:10px; flex-wrap:wrap; margin-top:24px; }
+  .card { background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:20px; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  .grid4 { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+  .tag { display:inline-block; background:var(--accent); color:var(--ink); border-radius:999px; font-size:12px; font-weight:800; padding:2px 8px; }
+  .step { border-top:2px solid var(--accent); padding-top:12px; }
+  figure { margin:36px 0 0; overflow:hidden; border-radius:18px; border:1px solid var(--line); background:var(--surface); }
+  figcaption { padding:18px 20px; }
+  label { display:block; font-size:13px; color:var(--muted); margin-bottom:6px; }
+  input, select, textarea { width:100%; background:#10120c; color:var(--fg); border:1px solid var(--line); border-radius:12px; padding:12px; font-family:inherit; font-size:15px; }
+  textarea { min-height:110px; }
+  .full { grid-column:1 / -1; }
+  .days { background:#10120c; border-radius:12px; padding:14px 16px; }
+  .days b { display:block; color:var(--accent); font-size:32px; }
+  .bar { height:8px; background:var(--surface); border-radius:999px; overflow:hidden; }
+  .bar span { display:block; height:100%; background:var(--accent); }
+  .ok { white-space:pre-wrap; background:#10120c; border-radius:12px; padding:14px; }
+  .job { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  footer { border-top:1px solid var(--line); padding:28px 0 40px; color:var(--muted); font-size:13px; }
+  @media (max-width:800px) {
+    .desk-nav { display:none; }
+    .grid2, .grid3, .grid4 { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="#top"><b>예진미디어</b><small>POST ROOM</small></a>
+    <div class="desk-nav">
+      <nav>
+        <a href="#tools">프로그램</a>
+        <a href="#work">작업</a>
+        <a href="#price">가격</a>
+        <a href="#desk">문의</a>
+      </nav>
+    </div>
+    <a class="btn" href="#book">작업 맡기기</a>
+  </div>
+</header>
+<main id="top">
+  <section class="hero wrap">
+    <p class="kicker">영상 종편실</p>
+    <h1>찍은 다음을<br/>여기서 마무리합니다.</h1>
+    <p class="muted" style="max-width:640px;font-size:18px">숏폼, 다큐, 유튜브 본편을 컷·모션·자막·썸네일까지 한 편집실에서 납품합니다. 원본만 넘겨 주시면 업로드 가능한 완성본으로 돌려드립니다.</p>
+    <div class="row">
+      <a class="btn" href="#book">의뢰서 작성</a>
+      <a class="btn ghost" href="#work">작업 범위</a>
+    </div>
+    <figure>
+      <img id="poster" src="" alt="편집실에서 작업 중인 영상편집 킹마스터" />
+      <figcaption>
+        <p style="font-weight:800;font-size:18px;margin:0 0 8px">편하게 물어보세요. 친절하게 상담해 드립니다.</p>
+        <p class="muted" style="margin:0">한국인의 밥상, TV는 사랑을 싣고, 6시 내고향, KBS다큐은, KBS다큐공감, 극한직업, 세계테마기행, 다큐프라임 등 방송 경력으로 최선을 다하겠습니다.</p>
+      </figcaption>
+    </figure>
+  </section>
+  <section id="tools"><div class="wrap">
+    <h2>편집은 이 네 가지로 합니다</h2>
+    <p class="muted">프로그램이 나뉘어도 납품은 한 패키지입니다. 컷, 모션, 자막, 스틸을 나눠 받으시고, 한 번에 돌려드립니다.</p>
+    <div class="grid2" id="tools-grid"></div>
+  </div></section>
+  <section id="work"><div class="wrap">
+    <h2>종편실에서 하는 일입니다</h2>
+    <p class="muted">예상 작업일은 1인 편집 기준입니다. 편수가 늘면 일정 계산기도 함께 늘어납니다.</p>
+    <div class="grid3" id="work-grid"></div>
+  </div></section>
+  <section id="price"><div class="wrap">
+    <h2>가격과 문의</h2>
+    <p class="muted">금액은 편수와 난이도를 확인한 뒤 안내드립니다. 전화로 바로 문의하셔도 됩니다.</p>
+    <div class="grid2">
+      <a class="card" href="tel:01033334763"><p class="muted">전화번호</p><p style="font-size:28px;font-weight:800;margin:4px 0">010-3333-4763</p></a>
+      <div class="card"><p class="muted">주소</p><p style="font-size:28px;font-weight:800;margin:4px 0">서울</p></div>
+    </div>
+    <div class="grid3" id="price-grid" style="margin-top:12px"></div>
+  </div></section>
+  <section><div class="wrap">
+    <h2>일은 이렇게 진행됩니다</h2>
+    <div class="grid4" id="steps"></div>
+  </div></section>
+  <section id="desk"><div class="wrap">
+    <h2>일정을 잡고 의뢰해 주세요</h2>
+    <p class="muted">작업 종류와 편수를 고르시면 예상 작업일이 나옵니다. 접수함은 이 브라우저에만 저장됩니다.</p>
+    <p class="muted" id="load-label" style="margin-top:16px">진행 중 0일 / 여유 10일</p>
+    <div class="bar"><span id="load-bar" style="width:0%"></span></div>
+    <form id="job" class="card" style="margin-top:20px">
+      <div class="grid2">
+        <div><label>작업 종류</label><select id="kind"></select></div>
+        <div><label>편수</label><input id="count" type="number" min="1" max="30" value="1" /></div>
+        <label class="full"><input id="bi" type="checkbox" /> 한국어 + 일본어 (작업일 +1)</label>
+        <div class="days full"><span class="muted">예상 작업일</span><b id="days">2일</b></div>
+        <div><label>이름 / 채널명</label><input id="name" placeholder="채널명" /></div>
+        <div><label>연락처</label><input id="contact" placeholder="이메일 또는 카카오톡" /></div>
+        <div><label>희망 납기</label><input id="due" type="date" /></div>
+        <div><label>받는 메일 (스튜디오)</label><input id="mail" type="email" placeholder="studio@example.com" /></div>
+        <div class="full"><label>어떤 영상인지</label><textarea id="brief" placeholder="길이, 원본 유무, 참고 링크"></textarea></div>
+      </div>
+      <p id="error" class="muted"></p>
+      <div class="row">
+        <button class="btn" type="submit">접수함에 넣기</button>
+        <button class="btn ghost" type="button" id="send">메일로 보내기</button>
+        <button class="btn ghost" type="button" id="copy">복사</button>
+      </div>
+      <pre class="ok" id="notice" hidden></pre>
+    </form>
+    <h3>접수함</h3>
+    <div id="inbox" class="muted">아직 없습니다. 의뢰를 넣으시면 여기에 쌓이고, 진행과 완료로 옮기실 수 있습니다.</div>
+  </div></section>
+</main>
+<footer><div class="wrap">예진미디어 영상 종편실 · 서울 · 010-3333-4763 · Final Cut Pro · After Effects · Motion · Photoshop</div></footer>
+<script>
+const KINDS = [
+  {id:"shorts", label:"숏폼 종편", tool:"Final Cut", days:2, note:"38–50초, 훅·자막·엔딩"},
+  {id:"doc", label:"다큐 · 본편", tool:"Final Cut", days:5, note:"여러 촬영본을 한 편으로 구성"},
+  {id:"motion", label:"모션 · 인포", tool:"After Effects", days:3, note:"도식, 수치, 화면 합성"},
+  {id:"titles", label:"자막 · 템플릿", tool:"Motion", days:2, note:"한/일 자막, 오프닝, 엔딩"},
+  {id:"thumb", label:"썸네일 · 배너", tool:"Photoshop", days:1, note:"제목과 함께 크롭"},
+  {id:"pack", label:"패키지 전체", tool:"전체", days:7, note:"컷부터 썸네일까지"}
+];
+const TOOLS = [
+  ["Final Cut Pro","컷 · 색 · 오디오","숏폼과 본편 타임라인, 점프컷, 레벨, 색보정을 합니다. 4K 마스터는 여기서 마무리합니다."],
+  ["After Effects","모션 · 합성","인포그래픽, 수치, 로고 모션을 만듭니다. 설명형 컷을 파이널 컷에 넣습니다."],
+  ["Motion","자막 · 템플릿","오프닝, 하단 자막, 엔딩을 맞춥니다. 시리즈가 반복되어도 톤이 흩어지지 않게 고정합니다."],
+  ["Photoshop","스틸 · 썸네일","썸네일과 배너를 만듭니다. 글자가 작아져도 읽히도록 대비와 크롭을 맞춥니다."]
+];
+const STEPS = [
+  ["01","의뢰","종류, 편수, 납기, 참고 영상만 적어 주시면 됩니다."],
+  ["02","일정","예상 작업일과 가능 여부를 확인한 뒤 일정을 확정합니다."],
+  ["03","종편","컷한 뒤 모션·자막·썸네일을 붙입니다. 중간 시사는 1회입니다."],
+  ["04","납품","수정 2회를 반영한 뒤 마스터, SRT, 썸네일을 전달합니다."]
+];
+document.getElementById("tools-grid").innerHTML = TOOLS.map(t => `<article class="card"><h3 style="margin:0">${t[0]}</h3><p style="color:var(--accent);font-weight:700;margin:4px 0">${t[1]}</p><p class="muted">${t[2]}</p></article>`).join("");
+document.getElementById("work-grid").innerHTML = KINDS.map(k => `<article class="card"><span class="tag">${k.tool}</span><h3>${k.label}</h3><p class="muted">${k.note}</p><p style="color:var(--accent)">기본 ${k.days}일</p></article>`).join("");
+document.getElementById("price-grid").innerHTML = KINDS.map(k => `<article class="card"><h3 style="margin:0">${k.label}</h3><p class="muted">${k.note}</p><p style="color:var(--accent);font-weight:800">상담 견적</p></article>`).join("");
+document.getElementById("steps").innerHTML = STEPS.map(s => `<div class="step"><p style="color:var(--accent);font-weight:800">${s[0]}</p><h3 style="margin:4px 0">${s[1]}</h3><p class="muted">${s[2]}</p></div>`).join("");
+const kindEl = document.getElementById("kind");
+kindEl.innerHTML = KINDS.map(k => `<option value="${k.id}">${k.label}</option>`).join("");
+const KEY = "yejin-jobs", MAIL = "yejin-mail";
+let jobs = [];
+try { jobs = JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) { jobs = []; }
+document.getElementById("mail").value = localStorage.getItem(MAIL) || "";
+function daysOf() {
+  const base = KINDS.find(k => k.id === kindEl.value).days;
+  const n = Math.max(1, Number(document.getElementById("count").value) || 1);
+  const extra = document.getElementById("bi").checked && kindEl.value !== "thumb" ? 1 : 0;
+  return base * n + extra;
+}
+function paintDays() { document.getElementById("days").textContent = daysOf() + "일"; }
+["change","input"].forEach(ev => document.getElementById("job").addEventListener(ev, paintDays));
+function text() {
+  const k = KINDS.find(x => x.id === kindEl.value);
+  return ["[예진미디어 작업 의뢰]",
+    "이름/채널: " + document.getElementById("name").value.trim(),
+    "연락처: " + document.getElementById("contact").value.trim(),
+    "작업: " + k.label + " · " + k.tool,
+    "편수: " + document.getElementById("count").value,
+    "언어: " + (document.getElementById("bi").checked ? "한국어 + 일본어" : "단일 언어"),
+    "예상 작업일: " + daysOf() + "일",
+    "희망 납기: " + (document.getElementById("due").value || "미정"),
+    "", document.getElementById("brief").value.trim()].join("\n");
+}
+function valid() {
+  const ok = document.getElementById("name").value.trim() && document.getElementById("contact").value.trim() && document.getElementById("brief").value.trim();
+  document.getElementById("error").textContent = ok ? "" : "이름, 연락처, 영상 설명을 적어 주세요.";
+  return ok;
+}
+function show(msg) { const n = document.getElementById("notice"); n.hidden = false; n.textContent = msg; }
+function render() {
+  const active = jobs.filter(j => j.status === "active").reduce((s,j) => s + j.days, 0);
+  document.getElementById("load-label").textContent = "진행 중 " + active + "일 / 여유 10일";
+  document.getElementById("load-bar").style.width = Math.min(100, Math.round(active/10*100)) + "%";
+  const box = document.getElementById("inbox");
+  if (!jobs.length) { box.className = "muted"; box.textContent = "아직 없습니다. 의뢰를 넣으시면 여기에 쌓이고, 진행과 완료로 옮기실 수 있습니다."; return; }
+  box.className = "";
+  box.innerHTML = jobs.map(j => {
+    const label = KINDS.find(k => k.id === j.kind).label;
+    const btns = ["inbox","active","done"].map(s => `<button type="button" data-id="${j.id}" data-s="${s}" class="btn ${j.status===s?"":"ghost"}" style="height:36px">${s==="inbox"?"문의":s==="active"?"진행":"완료"}</button>`).join(" ");
+    return `<article class="card" style="margin-top:10px"><div class="job"><div><b>${j.name}</b><p class="muted">${label} · ${j.count}편 · ${j.days}일 · ${j.contact}</p><p class="muted">${j.brief}</p></div><div class="row">${btns}</div></div></article>`;
+  }).join("");
+}
+document.getElementById("inbox").addEventListener("click", (e) => {
+  const b = e.target.closest("button"); if (!b) return;
+  jobs = jobs.map(j => j.id === b.dataset.id ? {...j, status:b.dataset.s} : j);
+  localStorage.setItem(KEY, JSON.stringify(jobs));
+  render();
+});
+document.getElementById("mail").addEventListener("input", (e) => localStorage.setItem(MAIL, e.target.value));
+document.getElementById("job").addEventListener("submit", (e) => {
+  e.preventDefault();
+  if (!valid()) return;
+  jobs.unshift({id:crypto.randomUUID(), name:document.getElementById("name").value.trim(), contact:document.getElementById("contact").value.trim(), kind:kindEl.value, count:Number(document.getElementById("count").value)||1, days:daysOf(), brief:document.getElementById("brief").value.trim(), status:"inbox"});
+  localStorage.setItem(KEY, JSON.stringify(jobs));
+  document.getElementById("brief").value = "";
+  show("이 기기의 접수함에 넣었습니다. 다른 컴퓨터에서는 보이지 않습니다.");
+  render();
+});
+document.getElementById("copy").onclick = async () => {
+  if (!valid()) return;
+  try { await navigator.clipboard.writeText(text()); show("의뢰 내용을 복사했습니다. 카톡이나 메일에 붙여 넣으면 됩니다."); }
+  catch (e) { show(text()); }
+};
+document.getElementById("send").onclick = () => {
+  if (!valid()) return;
+  const to = document.getElementById("mail").value.trim();
+  if (!to) { document.getElementById("error").textContent = "아래 받는 메일을 먼저 적어 주세요. 스튜디오 주소입니다."; return; }
+  location.href = "mailto:" + to + "?subject=" + encodeURIComponent("예진미디어 종편 의뢰 - " + document.getElementById("name").value) + "&body=" + encodeURIComponent(text());
+  show("메일 앱으로 의뢰서를 엽니다.");
+};
+paintDays(); render();
+</script>
+<script>
+Promise.all(["p0.txt","p1.txt","p2.txt","p3.txt","p4.txt"].map(p=>fetch(p).then(r=>r.text()))).then(c=>{document.getElementById("poster").src="data:image/jpeg;base64,"+c.join("");});
+</script>
+</body>
+</html>
