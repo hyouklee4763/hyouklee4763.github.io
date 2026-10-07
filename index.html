@@ -224,16 +224,23 @@ function draft() {
   return { id: crypto.randomUUID(), name, contact, kind:k.id, label:k.label, tool:k.tool, count:Math.max(1, Number(document.getElementById("count").value)||1), bilingual:document.getElementById("bi").checked, due:document.getElementById("due").value, brief, days:daysOf(), status:"inbox" };
 }
 function text(j){ return ["[예진미디어 작업 의뢰]","이름/채널: "+j.name,"연락처: "+j.contact,"작업: "+j.label+" · "+j.tool,"편수: "+j.count,"언어: "+(j.bilingual?"한국어 + 일본어":"단일 언어"),"예상 작업일: "+j.days+"일","희망 납기: "+(j.due||"미정"),"",j.brief].join("\n"); }
+const PIN = "yejin4763";
+let seeContact = sessionStorage.getItem("yejin-see") === "1";
 function show(t){ const n=document.getElementById("ok"); n.hidden=false; n.textContent=t; }
 function render(){
   const box=document.getElementById("inbox");
   if(!jobs.length){ box.className="muted"; box.textContent="아직 없습니다. 의뢰를 넣으시면 여기에 쌓이고, 진행과 완료로 옮기실 수 있습니다."; return; }
   box.className="";
-  box.innerHTML = `<div class="row"><button type="button" class="btn ghost" data-clear="1">접수함 비우기</button></div>` + jobs.map((j,i)=>`<article class="card" style="margin-top:10px"><b>${j.name}</b><p class="muted">${j.label} · ${j.count}편 · ${j.days}일 · ${j.contact}</p><p class="muted">${j.brief}</p><div class="row">${["inbox","active","done"].map(s=>`<button type="button" class="${j.status===s?"btn":"btn ghost"}" data-i="${i}" data-s="${s}">${s==="inbox"?"문의":s==="active"?"진행":"완료"}</button>`).join("")}<button type="button" class="btn ghost" data-del="${i}">지우기</button></div></article>`).join("");
+  const lock = seeContact ? "" : `<div class="row"><input id="pin" type="password" placeholder="연락처 비밀번호" autocomplete="current-password" style="max-width:220px"><button type="button" class="btn" data-unlock="1">연락처 보기</button></div><p class="muted" id="pinerr"></p>`;
+  box.innerHTML = lock + `<div class="row"><button type="button" class="btn ghost" data-clear="1">접수함 비우기</button></div>` + jobs.map((j,i)=>`<article class="card" style="margin-top:10px"><b>${j.name}</b><p class="muted">${j.label} · ${j.count}편 · ${j.days}일 · ${seeContact ? j.contact : "연락처 숨김"}</p><p class="muted">${j.brief}</p><div class="row">${["inbox","active","done"].map(s=>`<button type="button" class="${j.status===s?"btn":"btn ghost"}" data-i="${i}" data-s="${s}">${s==="inbox"?"문의":s==="active"?"진행":"완료"}</button>`).join("")}<button type="button" class="btn ghost" data-del="${i}">지우기</button></div></article>`).join("");
 }
 document.getElementById("inbox").addEventListener("click", e => {
   const b=e.target.closest("button"); if(!b) return;
-  if (b.dataset.clear != null) jobs = [];
+  if (b.dataset.unlock != null) {
+    const pin = document.getElementById("pin");
+    if (pin && pin.value === PIN) { seeContact = true; sessionStorage.setItem("yejin-see", "1"); }
+    else { const err = document.getElementById("pinerr"); if (err) err.textContent = "비밀번호가 다릅니다."; return; }
+  } else if (b.dataset.clear != null) jobs = [];
   else if (b.dataset.del != null) jobs.splice(Number(b.dataset.del), 1);
   else jobs[Number(b.dataset.i)].status=b.dataset.s;
   localStorage.setItem(KEY, JSON.stringify(jobs));
