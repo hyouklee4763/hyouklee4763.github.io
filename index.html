@@ -229,11 +229,13 @@ function render(){
   const box=document.getElementById("inbox");
   if(!jobs.length){ box.className="muted"; box.textContent="아직 없습니다. 의뢰를 넣으시면 여기에 쌓이고, 진행과 완료로 옮기실 수 있습니다."; return; }
   box.className="";
-  box.innerHTML = jobs.map((j,i)=>`<article class="card" style="margin-top:10px"><b>${j.name}</b><p class="muted">${j.label} · ${j.count}편 · ${j.days}일 · ${j.contact}</p><p class="muted">${j.brief}</p><div class="row">${["inbox","active","done"].map(s=>`<button type="button" class="${j.status===s?"btn":"btn ghost"}" data-i="${i}" data-s="${s}">${s==="inbox"?"문의":s==="active"?"진행":"완료"}</button>`).join("")}</div></article>`).join("");
+  box.innerHTML = `<div class="row"><button type="button" class="btn ghost" data-clear="1">접수함 비우기</button></div>` + jobs.map((j,i)=>`<article class="card" style="margin-top:10px"><b>${j.name}</b><p class="muted">${j.label} · ${j.count}편 · ${j.days}일 · ${j.contact}</p><p class="muted">${j.brief}</p><div class="row">${["inbox","active","done"].map(s=>`<button type="button" class="${j.status===s?"btn":"btn ghost"}" data-i="${i}" data-s="${s}">${s==="inbox"?"문의":s==="active"?"진행":"완료"}</button>`).join("")}<button type="button" class="btn ghost" data-del="${i}">지우기</button></div></article>`).join("");
 }
 document.getElementById("inbox").addEventListener("click", e => {
   const b=e.target.closest("button"); if(!b) return;
-  jobs[Number(b.dataset.i)].status=b.dataset.s;
+  if (b.dataset.clear != null) jobs = [];
+  else if (b.dataset.del != null) jobs.splice(Number(b.dataset.del), 1);
+  else jobs[Number(b.dataset.i)].status=b.dataset.s;
   localStorage.setItem(KEY, JSON.stringify(jobs));
   render();
 });
