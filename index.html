@@ -47,12 +47,15 @@
   textarea { min-height:110px; }
   .full { grid-column:1 / -1; }
   .days { font-size:32px; font-weight:800; color:var(--accent); margin:4px 0 0; }
-  .note { white-space:pre-wrap; background:#10120c; border-radius:12px; padding:14px; }
+  .past { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:22px; }
+  .past figure { margin:0; }
+  .past img { width:100%; aspect-ratio:16/9; object-fit:contain; background:#0c0d0a; }
+  .past figcaption { padding:12px 14px; font-weight:700; }
   footer { border-top:1px solid var(--line); padding:28px 0 40px; color:var(--muted); font-size:13px; }
   button { cursor:pointer; }
   @media (max-width:800px) {
     nav a { display:none; }
-    .grid2,.grid3,.grid4 { grid-template-columns:1fr; }
+    .grid2,.grid3,.grid4,.past { grid-template-columns:1fr; }
   }
 </style>
 </head>
@@ -62,6 +65,7 @@
     <a class="logo" href="#top"><b>예진미디어</b><small>POST ROOM</small></a>
     <nav>
       <a href="#sample">샘플</a>
+      <a href="#past">지난 작업</a>
       <a href="#tools">프로그램</a>
       <a href="#work">작업</a>
       <a href="#price">가격</a>
@@ -102,6 +106,18 @@
       <div class="wide">
         <iframe src="https://www.youtube.com/embed/HrokOHBtLNs" title="예진미디어 영상 샘플" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
       </div>
+    </div>
+  </div></section>
+  <section id="past"><div class="wrap">
+    <h2>지난 작업</h2>
+    <p class="muted">방송 타이틀입니다. 사진을 누르시면 크게 보실 수 있습니다.</p>
+    <div class="past">
+      <figure><a href="work/docu-on.png"><img src="work/docu-on.png" alt="다큐On 타이틀"></a><figcaption>다큐On</figcaption></figure>
+      <figure><a href="work/documentary.png"><img src="work/documentary.png" alt="일요특선 다큐멘터리 타이틀"></a><figcaption>일요특선 다큐멘터리</figcaption></figure>
+      <figure><a href="work/table.png"><img src="work/table.png" alt="한국인의 밥상 타이틀"></a><figcaption>한국인의 밥상</figcaption></figure>
+      <figure><a href="work/extreme-job.jpg"><img src="work/extreme-job.jpg" alt="극한직업 타이틀"></a><figcaption>극한직업</figcaption></figure>
+      <figure><a href="work/theme-trip.png"><img src="work/theme-trip.png" alt="세계테마기행 타이틀"></a><figcaption>세계테마기행</figcaption></figure>
+      <figure><a href="work/success.png"><img src="work/success.png" alt="성공의 정석 타이틀"></a><figcaption>성공의 정석</figcaption></figure>
     </div>
   </div></section>
   <section id="tools"><div class="wrap">
