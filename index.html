@@ -241,8 +241,17 @@ function render(){
   const lock = seeContact ? "" : `<div class="row"><input id="pin" type="password" placeholder="연락처 비밀번호" autocomplete="current-password" style="max-width:220px"><button type="button" class="btn" data-unlock="1">연락처 보기</button></div><p class="muted" id="pinerr"></p>`;
   box.innerHTML = lock + jobs.map((j,i)=>`<article class="card" style="margin-top:10px"><b>${j.name}</b><p class="muted">${j.label} · ${j.count}편 · ${j.days}일 · ${seeContact ? j.contact : "연락처 숨김"}</p><p class="muted">${j.brief}</p><div class="row">${["inbox","active","done"].map(s=>`<button type="button" class="${j.status===s?"btn":"btn ghost"}" data-i="${i}" data-s="${s}">${s==="inbox"?"문의":s==="active"?"진행":"완료"}</button>`).join("")}<button type="button" class="btn ghost" data-del="${i}">지우기</button></div></article>`).join("");
 }
+function ownerOk(){
+  if (seeContact) return true;
+  const pin = prompt("비밀번호를 입력하세요. 다른 사람은 지울 수 없습니다.");
+  if (pin !== PIN) { show("비밀번호가 다릅니다."); return false; }
+  seeContact = true;
+  sessionStorage.setItem("yejin-see", "1");
+  return true;
+}
 document.getElementById("clear-inbox").onclick = () => {
   if (!jobs.length) { show("비울 내용이 없습니다."); return; }
+  if (!ownerOk()) return;
   if (!confirm("이 브라우저의 접수함을 모두 지울까요?")) return;
   jobs = [];
   localStorage.setItem(KEY, JSON.stringify(jobs));
@@ -255,8 +264,10 @@ document.getElementById("inbox").addEventListener("click", e => {
     const pin = document.getElementById("pin");
     if (pin && pin.value === PIN) { seeContact = true; sessionStorage.setItem("yejin-see", "1"); }
     else { const err = document.getElementById("pinerr"); if (err) err.textContent = "비밀번호가 다릅니다."; return; }
-  } else if (b.dataset.del != null) jobs.splice(Number(b.dataset.del), 1);
-  else jobs[Number(b.dataset.i)].status=b.dataset.s;
+  } else if (b.dataset.del != null) {
+    if (!ownerOk()) return;
+    jobs.splice(Number(b.dataset.del), 1);
+  } else jobs[Number(b.dataset.i)].status=b.dataset.s;
   localStorage.setItem(KEY, JSON.stringify(jobs));
   render();
 });
