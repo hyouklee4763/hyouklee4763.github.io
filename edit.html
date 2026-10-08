@@ -27,7 +27,7 @@
 <body>
 <main class="wrap">
   <h1>홈페이지 글 수정</h1>
-  <p>글을 고친 뒤 <b style="color:#f4efe4">홈페이지에 반영</b>을 누르세요. 1–2분 뒤 사이트에 나타납니다.</p>
+  <p>비밀번호만 넣으면 됩니다. 토큰은 필요 없습니다. 글을 고친 뒤 <b style="color:#f4efe4">홈페이지에 반영</b>을 누르고, 열리는 창에서 초록색 버튼만 한 번 누르세요.</p>
   <div id="lock" class="note">
     <label>비밀번호</label>
     <input id="gate" type="password" autocomplete="current-password" />
@@ -35,14 +35,6 @@
     <p id="gateerr"></p>
   </div>
   <form id="form" hidden>
-    <div class="note" id="tokenbox">
-      <p>처음 한 번만 하면 됩니다. 아래 링크에서 토큰을 만들어 붙여 넣으세요. 이 브라우저에만 저장되고, 홈페이지에는 안 보입니다.</p>
-      <p><a href="https://github.com/settings/tokens/new?scopes=public_repo&description=예진미디어%20수정" target="_blank" rel="noopener">토큰 만들기</a>를 연 다음, 만료는 90일, 초록색 <b style="color:#f4efe4">Generate token</b>을 누르고 나온 글자를 복사하세요.</p>
-      <label>깃허브 토큰</label>
-      <input id="token" type="password" autocomplete="off" />
-      <div class="row"><button type="button" id="savetoken" class="ghost">토큰 저장</button></div>
-      <p id="tokenstate"></p>
-    </div>
     <label>작은 제목</label>
     <input id="작은제목" />
     <label>큰 제목 (줄 바꾸려면 엔터)</label>
@@ -63,9 +55,7 @@
     <textarea id="가로영상"></textarea>
     <label>영상 게시판 (한 줄에 하나, 제목 | 주소)</label>
     <textarea id="게시판" style="min-height:140px"></textarea>
-    <label>맨 위 사진 바꾸기 (선택)</label>
-    <input id="photo" type="file" accept="image/*" />
-    <img id="preview" class="preview" alt="" hidden />
+    <p>맨 위 사진은 이 대화에 보내 주시면 바꿔 드립니다.</p>
     <div class="row">
       <button type="submit">홈페이지에 반영</button>
       <a class="btn ghost" href="./">사이트로 돌아가기</a>
@@ -85,15 +75,15 @@ document.getElementById("open").onclick = () => {
   boot();
 };
 function token(){ return localStorage.getItem("yejin-gh-token") || ""; }
-function paintToken(){
-  document.getElementById("tokenstate").textContent = token() ? "이 브라우저에 토큰이 저장되어 있습니다." : "토큰이 아직 없습니다.";
-}
-document.getElementById("savetoken").onclick = () => {
-  const v = document.getElementById("token").value.trim();
-  if (!v) return;
-  localStorage.setItem("yejin-gh-token", v);
-  document.getElementById("token").value = "";
-  paintToken();
+function paintToken(){}
+document.getElementById("form").onsubmit = (e) => {
+  e.preventDefault();
+  const body = "===SITE===\n" + JSON.stringify(collect()) + "\n===END===";
+  const url = "https://github.com/hyouklee4763/hyouklee4763.github.io/issues/new?title=" + encodeURIComponent("홈페이지 수정") + "&body=" + encodeURIComponent(body);
+  window.open(url, "_blank", "noopener");
+  const msg = document.getElementById("msg");
+  msg.className = "ok";
+  msg.textContent = "열린 창에서 초록색 Submit new issue 버튼만 누르세요. 1–2분 뒤 사이트를 새로고침하면 반영됩니다.";
 };
 function lines(id){ return document.getElementById(id).value.split(/\n/).map(s => s.trim()).filter(Boolean); }
 function collect(){
@@ -115,51 +105,9 @@ function fill(s){
   document.getElementById("게시판").value = (s.게시판||[]).map(item => item.제목 + " | " + item.주소).join("\n");
 }
 async function boot(){
-  paintToken();
   const s = await fetch("site.json").then(r => r.json());
   fill(s);
 }
-function b64(str){ return btoa(unescape(encodeURIComponent(str))); }
-async function gh(path, opt){
-  const res = await fetch("https://api.github.com/repos/" + REPO + "/contents/" + path, Object.assign({
-    headers: { Authorization: "Bearer " + token(), Accept: "application/vnd.github+json" }
-  }, opt || {}));
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.message || "저장에 실패했습니다.");
-  return data;
-}
-document.getElementById("photo").onchange = () => {
-  const file = document.getElementById("photo").files[0];
-  const img = document.getElementById("preview");
-  if (!file) { img.hidden = true; return; }
-  img.src = URL.createObjectURL(file);
-  img.hidden = false;
-};
-document.getElementById("form").onsubmit = async (e) => {
-  e.preventDefault();
-  const msg = document.getElementById("msg");
-  if (!token()) { msg.textContent = "먼저 토큰을 저장해 주세요."; return; }
-  msg.textContent = "저장하는 중입니다.";
-  try {
-    const body = JSON.stringify(collect(), null, 2) + "\n";
-    const cur = await gh("site.json");
-    await gh("site.json", { method:"PUT", headers:{ Authorization:"Bearer "+token(), Accept:"application/vnd.github+json", "Content-Type":"application/json" }, body: JSON.stringify({ message:"홈페이지 글 수정", content:b64(body), sha:cur.sha, branch:"main" }) });
-    const file = document.getElementById("photo").files[0];
-    if (file) {
-      const dataUrl = await file.arrayBuffer();
-      let binary = "";
-      const bytes = new Uint8Array(dataUrl);
-      for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-      const photo = await gh("king-master-wide.jpg");
-      await gh("king-master-wide.jpg", { method:"PUT", headers:{ Authorization:"Bearer "+token(), Accept:"application/vnd.github+json", "Content-Type":"application/json" }, body: JSON.stringify({ message:"맨 위 사진 교체", content:btoa(binary), sha:photo.sha, branch:"main" }) });
-    }
-    msg.className = "ok";
-    msg.textContent = "반영했습니다. 1–2분 뒤 사이트를 새로고침하세요.";
-  } catch (err) {
-    msg.className = "";
-    msg.textContent = "저장하지 못했습니다. 토큰을 다시 만들어 저장해 주세요. (" + err.message + ")";
-  }
-};
 </script>
 </body>
 </html>

@@ -1,0 +1,49 @@
+name: apply homepage edit
+on:
+  issues:
+    types: [opened]
+permissions:
+  contents: write
+  issues: write
+jobs:
+  apply:
+    if: github.event.issue.user.login == 'hyouklee4763' && startsWith(github.event.issue.title, '홈페이지 수정')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: write site.json
+        env:
+          BODY: ${{ github.event.issue.body }}
+        run: |
+          python3 << 'PY'
+          import json, os, pathlib, re
+          body = os.environ.get("BODY", "")
+          match = re.search(r"===SITE===\s*(.*?)\s*===END===", body, re.S)
+          if not match:
+              raise SystemExit("site block missing")
+          data = json.loads(match.group(1))
+          pathlib.Path("site.json").write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          PY
+      - name: commit
+        run: |
+          git config user.email "338364348+hyouklee4763@users.noreply.github.com"
+          git config user.name "hyouklee4763"
+          git add site.json
+          git diff --cached --quiet || git commit -m "홈페이지 글 수정"
+          git push
+      - name: close issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: "홈페이지에 반영했습니다. 1–2분 뒤 새로고침하세요."
+            })
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              state: "closed"
+            })
