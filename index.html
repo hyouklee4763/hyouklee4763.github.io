@@ -77,9 +77,9 @@
 <main id="top">
   <section class="hero">
     <div class="wrap">
-      <p class="kicker">영상편집</p>
-      <h1>찍은 다음을<br/>여기서 마무리합니다.</h1>
-      <p class="muted" style="max-width:640px;font-size:18px">숏폼, 다큐, 유튜브 본편을 컷·모션·자막·썸네일까지 한 편집실에서 납품합니다. 원본만 넘겨 주시면 업로드 가능한 완성본으로 돌려드립니다.</p>
+      <p class="kicker" id="t-kicker">영상편집</p>
+      <h1 id="t-h1">찍은 다음을<br/>여기서 마무리합니다.</h1>
+      <p class="muted" id="t-intro" style="max-width:640px;font-size:18px">숏폼, 다큐, 유튜브 본편을 컷·모션·자막·썸네일까지 한 편집실에서 납품합니다. 원본만 넘겨 주시면 업로드 가능한 완성본으로 돌려드립니다.</p>
       <div class="row">
         <a class="btn" href="#book">의뢰서 작성</a>
         <a class="btn ghost" href="#work">작업 범위</a>
@@ -87,8 +87,8 @@
       <figure>
         <img src="king-master-wide.jpg" alt="영상편집 King 마스터. 편하게 물어보세요. 친절하게 상담해 드립니다." />
         <figcaption>
-          <p style="font-weight:800;font-size:18px;margin:0 0 8px">편하게 물어보세요. 친절하게 상담해 드립니다.</p>
-          <p class="muted" style="margin:0">한국인의 밥상, TV는 사랑을 싣고, 6시 내고향, KBS다큐온, KBS다큐공감, 극한직업, 세계테마기행, 다큐프라임 등 방송 경력으로 최선을 다하겠습니다.</p>
+          <p id="t-hello" style="font-weight:800;font-size:18px;margin:0 0 8px">편하게 물어보세요. 친절하게 상담해 드립니다.</p>
+          <p class="muted" id="t-career" style="margin:0">한국인의 밥상, TV는 사랑을 싣고, 6시 내고향, KBS다큐온, KBS다큐공감, 극한직업, 세계테마기행, 다큐프라임 등 방송 경력으로 최선을 다하겠습니다.</p>
         </figcaption>
       </figure>
     </div>
@@ -96,7 +96,7 @@
   <section id="sample"><div class="wrap">
     <h2>샘플 영상</h2>
     <p class="muted">숏츠와 본편 샘플입니다. 재생 버튼으로 바로 보실 수 있습니다.</p>
-    <div class="samples">
+    <div class="samples" id="t-samples">
       <div class="short">
         <iframe src="https://www.youtube.com/embed/3kM91ZG8Fwo" title="예진미디어 숏츠 샘플" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
       </div>
@@ -142,8 +142,8 @@
     <h2>가격과 문의</h2>
     <p class="muted">금액은 편수와 난이도를 확인한 뒤 안내드립니다. 전화로 바로 문의하셔도 됩니다.</p>
     <div class="grid2" style="margin-top:22px">
-      <a class="card" href="tel:01033334763"><p class="muted">전화번호</p><p style="font-size:28px;font-weight:800;margin:6px 0 0">010-3333-4763</p></a>
-      <div class="card"><p class="muted">주소</p><p style="font-size:28px;font-weight:800;margin:6px 0 0">서울</p></div>
+      <a class="card" id="t-phone-link" href="tel:01033334763"><p class="muted">전화번호</p><p id="t-phone" style="font-size:28px;font-weight:800;margin:6px 0 0">010-3333-4763</p></a>
+      <div class="card"><p class="muted">주소</p><p id="t-addr" style="font-size:28px;font-weight:800;margin:6px 0 0">서울</p></div>
     </div>
     <div class="grid3" id="prices" style="margin-top:12px"></div>
   </div></section>
@@ -183,7 +183,7 @@
     <div id="inbox" class="muted">아직 없습니다. 의뢰를 넣으시면 여기에 쌓이고, 진행과 완료로 옮기실 수 있습니다.</div>
   </div></section>
 </main>
-<footer><div class="wrap">예진미디어 영상편집 · 서울 · 010-3333-4763 · Final Cut Pro · After Effects · Motion · Photoshop</div></footer>
+<footer><div class="wrap" id="t-footer">예진미디어 영상편집 · 서울 · 010-3333-4763 · Final Cut Pro · After Effects · Motion · Photoshop</div></footer>
 <script>
 const KINDS = [
   {id:"shorts", label:"숏폼 종편", tool:"Final Cut", days:2, note:"38–50초, 훅·자막·엔딩"},
@@ -271,6 +271,44 @@ document.getElementById("mailbtn").onclick = () => {
   show("메일 앱으로 의뢰서를 엽니다.");
 };
 render();
+</script>
+<script>
+function ytId(url){
+  const m = String(url).match(/(?:shorts\/|youtu\.be\/|embed\/|v=)([A-Za-z0-9_-]{11})/);
+  return m ? m[1] : "";
+}
+function frame(id, wide){
+  const box = document.createElement("div");
+  box.className = wide ? "wide" : "short";
+  const f = document.createElement("iframe");
+  f.src = "https://www.youtube.com/embed/" + id;
+  f.title = "예진미디어 샘플";
+  f.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+  f.allowFullscreen = true;
+  box.appendChild(f);
+  return box;
+}
+fetch("site.json").then(r => r.json()).then(s => {
+  const set = (id, text) => { const n = document.getElementById(id); if (n && text) n.textContent = text; };
+  set("t-kicker", s.작은제목);
+  const h1 = document.getElementById("t-h1");
+  if (h1 && s.큰제목) h1.innerHTML = s.큰제목.replace(/&/g,"&").replace(/</g,"<").replace(/\n/g,"<br/>");
+  set("t-intro", s.소개);
+  set("t-hello", s.상담문구);
+  set("t-career", s.경력);
+  set("t-phone", s.전화번호);
+  set("t-addr", s.주소);
+  const link = document.getElementById("t-phone-link");
+  if (link && s.전화번호) link.href = "tel:" + s.전화번호.replace(/[^0-9]/g, "");
+  const foot = document.getElementById("t-footer");
+  if (foot) foot.textContent = "예진미디어 영상편집 · " + (s.주소||"서울") + " · " + (s.전화번호||"") + " · Final Cut Pro · After Effects · Motion · Photoshop";
+  const samples = document.getElementById("t-samples");
+  if (samples && (s.숏츠 || s.가로영상)) {
+    samples.innerHTML = "";
+    (s.숏츠||[]).forEach(u => { const id = ytId(u); if (id) samples.appendChild(frame(id, false)); });
+    (s.가로영상||[]).forEach(u => { const id = ytId(u); if (id) samples.appendChild(frame(id, true)); });
+  }
+}).catch(() => {});
 </script>
 </body>
 </html>
