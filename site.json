@@ -13,5 +13,11 @@
   ],
   "가로영상": [
     "https://youtu.be/HrokOHBtLNs"
+  ],
+  "게시판": [
+    { "제목": "숏츠 샘플", "주소": "https://youtube.com/shorts/3kM91ZG8Fwo" },
+    { "제목": "숏츠 샘플 2", "주소": "https://youtube.com/shorts/RXKKegwMXAM" },
+    { "제목": "숏츠 샘플 3", "주소": "https://youtube.com/shorts/HCYZ9P_2wcQ" },
+    { "제목": "본편 샘플", "주소": "https://youtu.be/HrokOHBtLNs" }
   ]
 }

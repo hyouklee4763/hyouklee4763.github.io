@@ -61,6 +61,8 @@
     <textarea id="숏츠"></textarea>
     <label>가로 영상 주소 (한 줄에 하나)</label>
     <textarea id="가로영상"></textarea>
+    <label>영상 게시판 (한 줄에 하나, 제목 | 주소)</label>
+    <textarea id="게시판" style="min-height:140px"></textarea>
     <label>맨 위 사진 바꾸기 (선택)</label>
     <input id="photo" type="file" accept="image/*" />
     <img id="preview" class="preview" alt="" hidden />
@@ -99,12 +101,18 @@ function collect(){
   KEYS.forEach(k => s[k] = document.getElementById(k).value.trim());
   s.숏츠 = lines("숏츠");
   s.가로영상 = lines("가로영상");
+  s.게시판 = lines("게시판").map(line => {
+    const cut = line.indexOf("|");
+    if (cut < 0) return { 제목: "영상", 주소: line };
+    return { 제목: line.slice(0, cut).trim(), 주소: line.slice(cut + 1).trim() };
+  }).filter(item => item.주소);
   return s;
 }
 function fill(s){
   KEYS.forEach(k => { if (s[k]) document.getElementById(k).value = s[k]; });
   document.getElementById("숏츠").value = (s.숏츠||[]).join("\n");
   document.getElementById("가로영상").value = (s.가로영상||[]).join("\n");
+  document.getElementById("게시판").value = (s.게시판||[]).map(item => item.제목 + " | " + item.주소).join("\n");
 }
 async function boot(){
   paintToken();

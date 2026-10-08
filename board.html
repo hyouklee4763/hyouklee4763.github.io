@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>영상 게시판 · 예진미디어</title>
+<meta name="description" content="예진미디어 영상 게시판. 숏츠와 편집 샘플을 올립니다." />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<style>
+  :root { --bg:#10110e; --surface:#181b14; --fg:#f4efe4; --muted:#b2ab9c; --accent:#d6ff3e; --ink:#14160c; --line:#2e3326; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font-family:Pretendard,"Apple SD Gothic Neo",sans-serif; line-height:1.5; }
+  a { color:inherit; text-decoration:none; }
+  .wrap { width:min(860px, calc(100% - 32px)); margin:0 auto; }
+  header { border-bottom:1px solid var(--line); }
+  .nav { display:flex; align-items:center; justify-content:space-between; height:64px; }
+  h1 { font-size:clamp(32px,5vw,48px); letter-spacing:-.04em; margin:28px 0 8px; }
+  .muted { color:var(--muted); }
+  .list { display:grid; gap:14px; margin:28px 0 64px; }
+  article { background:var(--surface); border:1px solid var(--line); border-radius:18px; overflow:hidden; }
+  button.post { display:grid; grid-template-columns:168px 1fr; gap:16px; width:100%; padding:0; border:0; background:transparent; color:inherit; text-align:left; font:inherit; cursor:pointer; }
+  button.post img { width:168px; height:112px; object-fit:cover; background:#000; }
+  .body { padding:16px 16px 16px 0; }
+  h2 { font-size:20px; margin:0 0 6px; }
+  iframe { width:100%; aspect-ratio:16/9; border:0; background:#000; display:block; }
+  .back { color:var(--accent); font-weight:800; }
+  @media (max-width:640px) {
+    button.post { grid-template-columns:1fr; }
+    button.post img { width:100%; height:180px; }
+    .body { padding:14px 16px 18px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap nav">
+    <a href="./"><b>예진미디어</b></a>
+    <a class="back" href="./">홈으로</a>
+  </div>
+</header>
+<main class="wrap">
+  <h1>영상 게시판</h1>
+  <p class="muted">올린 영상을 누르면 그 자리에서 재생됩니다.</p>
+  <div class="list" id="list"><p class="muted">불러오는 중입니다.</p></div>
+</main>
+<script>
+function ytId(url){
+  const m = String(url).match(/(?:shorts\/|youtu\.be\/|embed\/|v=)([A-Za-z0-9_-]{11})/);
+  return m ? m[1] : "";
+}
+function play(card, id){
+  const frame = document.createElement("iframe");
+  frame.src = "https://www.youtube.com/embed/" + id + "?autoplay=1";
+  frame.title = card.querySelector("h2").textContent;
+  frame.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+  frame.allowFullscreen = true;
+  card.innerHTML = "";
+  card.appendChild(frame);
+}
+fetch("site.json").then(r => r.json()).then(s => {
+  const list = document.getElementById("list");
+  const posts = s.게시판 || [];
+  if (!posts.length) { list.innerHTML = "<p class='muted'>아직 올린 영상이 없습니다.</p>"; return; }
+  list.innerHTML = "";
+  posts.forEach((post, i) => {
+    const id = ytId(post.주소 || "");
+    const card = document.createElement("article");
+    if (!id) return;
+    const btn = document.createElement("button");
+    btn.className = "post";
+    btn.type = "button";
+    const img = document.createElement("img");
+    img.src = "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg";
+    img.alt = "";
+    const body = document.createElement("div");
+    body.className = "body";
+    const title = document.createElement("h2");
+    title.textContent = post.제목 || "영상";
+    const no = document.createElement("p");
+    no.className = "muted";
+    no.textContent = String(posts.length - i).padStart(2, "0");
+    body.appendChild(no);
+    body.appendChild(title);
+    btn.appendChild(img);
+    btn.appendChild(body);
+    btn.onclick = () => play(card, id);
+    card.appendChild(btn);
+    list.appendChild(card);
+  });
+}).catch(() => {
+  document.getElementById("list").textContent = "게시판을 불러오지 못했습니다.";
+});
+</script>
+</body>
+</html>
