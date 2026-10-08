@@ -182,8 +182,12 @@
     </form>
     <div class="row" style="align-items:center;justify-content:space-between">
       <h3 style="margin:0">접수함</h3>
-      <button class="btn ghost" type="button" id="clear-inbox">접수함 비우기</button>
+      <div class="row" style="margin:0;align-items:center">
+        <input id="clear-pin" type="password" placeholder="비밀번호" autocomplete="off" style="max-width:160px;height:44px" />
+        <button class="btn ghost" type="button" id="clear-inbox">접수함 비우기</button>
+      </div>
     </div>
+    <p id="clear-msg" class="muted" style="margin:8px 0 0"></p>
     <div id="inbox" class="muted">아직 없습니다. 의뢰를 넣으시면 여기에 쌓이고, 진행과 완료로 옮기실 수 있습니다.</div>
   </div></section>
 </main>
@@ -242,9 +246,10 @@ function render(){
   box.innerHTML = lock + jobs.map((j,i)=>`<article class="card" style="margin-top:10px"><b>${j.name}</b><p class="muted">${j.label} · ${j.count}편 · ${j.days}일 · ${seeContact ? j.contact : "연락처 숨김"}</p><p class="muted">${j.brief}</p><div class="row">${["inbox","active","done"].map(s=>`<button type="button" class="${j.status===s?"btn":"btn ghost"}" data-i="${i}" data-s="${s}">${s==="inbox"?"문의":s==="active"?"진행":"완료"}</button>`).join("")}<button type="button" class="btn ghost" data-del="${i}">지우기</button></div></article>`).join("");
 }
 function ownerOk(){
-  if (seeContact) return true;
-  const pin = prompt("비밀번호를 입력하세요. 다른 사람은 지울 수 없습니다.");
-  if (pin !== PIN) { show("비밀번호가 다릅니다."); return false; }
+  const typed = (document.getElementById("clear-pin").value || "").trim();
+  const msg = document.getElementById("clear-msg");
+  if (typed !== PIN) { msg.textContent = "비밀번호가 다릅니다. 오른쪽 칸에 비밀번호를 넣고 다시 누르세요."; return false; }
+  msg.textContent = "";
   seeContact = true;
   sessionStorage.setItem("yejin-see", "1");
   return true;
