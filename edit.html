@@ -89,6 +89,7 @@ let loaded = {};
 document.getElementById("form").onsubmit = async (e) => {
   e.preventDefault();
   const msg = document.getElementById("msg");
+  const pending = window.open("about:blank", "_blank");
   msg.className = "";
   msg.textContent = "사진을 올리는 중입니다.";
   try {
@@ -105,12 +106,16 @@ document.getElementById("form").onsubmit = async (e) => {
     s.슬라이드 = slides;
     const body = "===SITE===\n" + JSON.stringify(s) + "\n===END===";
     const url = "https://github.com/hyouklee4763/hyouklee4763.github.io/issues/new?title=" + encodeURIComponent("홈페이지 수정") + "&body=" + encodeURIComponent(body);
-    window.open(url, "_blank", "noopener");
+    if (pending) pending.location = url;
+    else window.open(url, "_blank", "noopener");
     msg.className = "ok";
     msg.textContent = "열린 창에서 초록색 Submit new issue 버튼만 누르세요. 1–2분 뒤 사이트를 새로고침하면 사진이 바뀝니다.";
   } catch (err) {
+    if (pending) pending.close();
     msg.className = "";
-    msg.textContent = "사진을 올리지 못했습니다. 다른 사진으로 다시 해 주세요.";
+    msg.textContent = err && err.message === "image"
+      ? "이 사진을 읽지 못했습니다. JPG 또는 PNG로 저장한 뒤 다시 골라 주세요."
+      : "사진을 올리지 못했습니다. JPG나 PNG로 다시 골라 주세요.";
   }
 };
 function shrink(file) {
@@ -130,13 +135,35 @@ function shrink(file) {
   });
 }
 async function uploadPhoto(file) {
-  const blob = await shrink(file);
-  const fd = new FormData();
-  fd.append("file", blob, "slide.jpg");
-  const res = await fetch("https://telegra.ph/upload", { method: "POST", body: fd });
-  const data = await res.json();
-  if (!data[0] || !data[0].src) throw new Error("upload");
-  return "https://telegra.ph" + data[0].src;
+  let blob;
+  try { blob = await shrink(file); }
+  catch (e) {
+    if (e && e.message === "image") throw e;
+    blob = file;
+  }
+  const hosts = [
+    ["https://litterbox.catbox.moe/resources/internals/api.php", "72h"],
+    ["https://catbox.moe/user/api.php", ""]
+  ];
+  for (const [url, time] of hosts) {
+    try {
+      const fd = new FormData();
+      fd.append("reqtype", "fileupload");
+      if (time) fd.append("time", time);
+      fd.append("fileToUpload", blob, "slide.jpg");
+      const res = await fetch(url, { method: "POST", body: fd });
+      const text = (await res.text()).trim();
+      if (/^https?:\/\/\S+$/.test(text)) return text;
+    } catch (e) {}
+  }
+  try {
+    const fd = new FormData();
+    fd.append("file", blob, "slide.jpg");
+    const res = await fetch("https://telegra.ph/upload", { method: "POST", body: fd });
+    const data = await res.json();
+    if (data[0] && data[0].src) return "https://telegra.ph" + data[0].src;
+  } catch (e) {}
+  throw new Error("upload");
 }
 [1,2,3].forEach(i => {
   document.getElementById("slide" + i).onchange = () => {
