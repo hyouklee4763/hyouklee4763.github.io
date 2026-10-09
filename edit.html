@@ -28,6 +28,7 @@
 <main class="wrap">
   <h1>홈페이지 글 수정</h1>
   <p>비밀번호만 넣으면 됩니다. 토큰은 필요 없습니다. 글을 고친 뒤 <b style="color:#f4efe4">홈페이지에 반영</b>을 누르고, 열리는 창에서 초록색 버튼만 한 번 누르세요.</p>
+  <p id="fresh">사진을 바꾸면 붙여넣기가 한 번 있습니다.</p>
   <div id="lock" class="note">
     <label>비밀번호</label>
     <input id="gate" type="password" autocomplete="current-password" />
@@ -57,19 +58,23 @@
     <textarea id="게시판" style="min-height:140px"></textarea>
     <label>슬라이드 1번 사진</label>
     <img id="pv1" class="preview" alt="" src="king-master-wide.jpg?v=3">
-    <input id="slide1" type="file" accept="image/*">
+    <input id="slide1" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp">
+    <p id="st1"></p>
     <label>슬라이드 2번 사진</label>
     <img id="pv2" class="preview" alt="" src="work/table.png">
-    <input id="slide2" type="file" accept="image/*">
+    <input id="slide2" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp">
+    <p id="st2"></p>
     <label>슬라이드 3번 사진</label>
     <img id="pv3" class="preview" alt="" src="work/theme-trip.png">
-    <input id="slide3" type="file" accept="image/*">
-    <p>바꾸고 싶은 칸만 사진을 고르세요. 고르지 않은 칸은 그대로 둡니다.</p>
+    <input id="slide3" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp">
+    <p id="st3"></p>
+    <p>사진을 바꾸면 붙여넣기가 한 번 있습니다. 바꾸고 싶은 칸만 고르세요. 고르지 않은 칸은 그대로 둡니다. 글만 바꿀 때는 붙여넣기가 없습니다.</p>
     <div class="row">
       <button type="submit">홈페이지에 반영</button>
       <a class="btn ghost" href="./">사이트로 돌아가기</a>
     </div>
     <p id="msg"></p>
+    <textarea id="copybox" style="display:none"></textarea>
   </form>
 </main>
 <script>
@@ -86,91 +91,129 @@ document.getElementById("open").onclick = () => {
 function token(){ return localStorage.getItem("yejin-gh-token") || ""; }
 function paintToken(){}
 let loaded = {};
-document.getElementById("form").onsubmit = async (e) => {
+document.getElementById("form").onsubmit = (e) => {
   e.preventDefault();
   const msg = document.getElementById("msg");
-  const pending = window.open("about:blank", "_blank");
   msg.className = "";
-  msg.textContent = "사진을 올리는 중입니다.";
-  try {
-    const s = collect();
-    const slides = (loaded.슬라이드 && loaded.슬라이드.slice()) || [
-      "king-master-wide.jpg?v=3",
-      "work/table.png",
-      "work/theme-trip.png"
-    ];
-    for (let i = 0; i < 3; i++) {
-      const file = document.getElementById("slide" + (i + 1)).files[0];
-      if (file) slides[i] = await uploadPhoto(file);
+  if (preparing) { msg.textContent = "사진을 아직 읽고 있습니다. 잠시 뒤 다시 눌러 주세요."; return; }
+  for (let i = 0; i < 3; i++) {
+    const file = document.getElementById("slide" + (i + 1)).files[0];
+    if (file && !encoded[i]) {
+      msg.textContent = document.getElementById("st" + (i + 1)).textContent || "사진을 읽지 못했습니다. JPG 또는 PNG로 다시 골라 주세요.";
+      return;
     }
-    s.슬라이드 = slides;
-    const body = "===SITE===\n" + JSON.stringify(s) + "\n===END===";
-    const url = "https://github.com/hyouklee4763/hyouklee4763.github.io/issues/new?title=" + encodeURIComponent("홈페이지 수정") + "&body=" + encodeURIComponent(body);
-    if (pending) pending.location = url;
-    else window.open(url, "_blank", "noopener");
-    msg.className = "ok";
-    msg.textContent = "열린 창에서 초록색 Submit new issue 버튼만 누르세요. 1–2분 뒤 사이트를 새로고침하면 사진이 바뀝니다.";
-  } catch (err) {
-    if (pending) pending.close();
-    msg.className = "";
-    msg.textContent = err && err.message === "image"
-      ? "이 사진을 읽지 못했습니다. JPG 또는 PNG로 저장한 뒤 다시 골라 주세요."
-      : "사진을 올리지 못했습니다. JPG나 PNG로 다시 골라 주세요.";
   }
+  const s = collect();
+  const slides = (loaded.슬라이드 && loaded.슬라이드.slice()) || [
+    "king-master-wide.jpg?v=3",
+    "work/table.png",
+    "work/theme-trip.png"
+  ];
+  for (let i = 0; i < 3; i++) if (encoded[i]) slides[i] = encoded[i];
+  s.슬라이드 = slides;
+  const body = "===SITE===\n" + JSON.stringify(s) + "\n===END===";
+  if (body.length > 60000) {
+    msg.textContent = "사진이 너무 큽니다. 한 번에 한 장만 바꾸어 주세요.";
+    return;
+  }
+  const titleUrl = "https://github.com/hyouklee4763/hyouklee4763.github.io/issues/new?title=" + encodeURIComponent("홈페이지 수정");
+  const changed = encoded.some(Boolean);
+  if (!changed) {
+    window.open(titleUrl + "&body=" + encodeURIComponent(body), "_blank", "noopener");
+    msg.className = "ok";
+    msg.textContent = "열린 창에서 초록색 Submit new issue 버튼만 누르세요. 1–2분 뒤 사이트를 새로고침하면 글이 바뀝니다.";
+    return;
+  }
+  const box = document.getElementById("copybox");
+  box.style.display = "block";
+  box.value = body;
+  box.focus();
+  box.select();
+  let copied = false;
+  try { copied = document.execCommand("copy"); } catch (err) {}
+  window.open(titleUrl, "_blank", "noopener");
+  msg.className = "ok";
+  msg.textContent = copied
+    ? "글을 복사해 두었습니다. GitHub 창의 비어 있는 큰 칸을 클릭하고 Command+V (윈도우는 Ctrl+V)로 붙여넣으세요. 글이 들어간 뒤에만 초록색 Submit new issue를 누르세요."
+    : "아래 칸을 클릭한 뒤 Command+C로 복사하고, GitHub 큰 칸에 Command+V로 붙여넣으세요. 그 다음 초록색 Submit new issue를 누르세요.";
 };
-function shrink(file) {
+const encoded = ["", "", ""];
+let prepareToken = 0;
+let preparing = false;
+function shrink(file, max, quality) {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {
-      const max = 1400;
       const scale = Math.min(1, max / img.width, max / img.height);
       const canvas = document.createElement("canvas");
       canvas.width = Math.max(1, Math.round(img.width * scale));
       canvas.height = Math.max(1, Math.round(img.height * scale));
-      canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
-      canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error("blob")), "image/jpeg", 0.82);
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "#111";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error("blob")), "image/jpeg", quality);
+      URL.revokeObjectURL(img.src);
     };
-    img.onerror = () => reject(new Error("image"));
+    img.onerror = () => { URL.revokeObjectURL(img.src); reject(new Error("image")); };
     img.src = URL.createObjectURL(file);
   });
 }
-async function uploadPhoto(file) {
-  let blob;
-  try { blob = await shrink(file); }
-  catch (e) {
-    if (e && e.message === "image") throw e;
-    blob = file;
-  }
-  const hosts = [
-    ["https://litterbox.catbox.moe/resources/internals/api.php", "72h"],
-    ["https://catbox.moe/user/api.php", ""]
-  ];
-  for (const [url, time] of hosts) {
-    try {
-      const fd = new FormData();
-      fd.append("reqtype", "fileupload");
-      if (time) fd.append("time", time);
-      fd.append("fileToUpload", blob, "slide.jpg");
-      const res = await fetch(url, { method: "POST", body: fd });
-      const text = (await res.text()).trim();
-      if (/^https?:\/\/\S+$/.test(text)) return text;
-    } catch (e) {}
-  }
-  try {
-    const fd = new FormData();
-    fd.append("file", blob, "slide.jpg");
-    const res = await fetch("https://telegra.ph/upload", { method: "POST", body: fd });
-    const data = await res.json();
-    if (data[0] && data[0].src) return "https://telegra.ph" + data[0].src;
-  } catch (e) {}
-  throw new Error("upload");
+function blobToData(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error("read"));
+    reader.readAsDataURL(blob);
+  });
 }
-[1,2,3].forEach(i => {
+async function encodePhoto(file, budget) {
+  let max = 1400, quality = 0.74, data = "";
+  for (let n = 0; n < 10; n++) {
+    data = await blobToData(await shrink(file, max, quality));
+    if (data.length <= budget) return data;
+    if (quality > 0.42) quality = Math.round((quality - 0.08) * 100) / 100;
+    else max = Math.round(max * 0.8);
+    if (max < 420) break;
+  }
+  if (data.length > budget + 8000) throw new Error("big");
+  return data;
+}
+async function preparePhotos() {
+  const token = ++prepareToken;
+  preparing = true;
+  const picked = [0, 1, 2].filter(i => document.getElementById("slide" + (i + 1)).files[0]);
+  const budget = Math.floor(50000 / Math.max(1, picked.length));
+  try {
+    for (let i = 0; i < 3; i++) {
+      const file = document.getElementById("slide" + (i + 1)).files[0];
+      const note = document.getElementById("st" + (i + 1));
+      if (!file) { encoded[i] = ""; note.textContent = ""; continue; }
+      note.textContent = "사진을 읽고 있습니다.";
+      try {
+        const data = await encodePhoto(file, budget);
+        if (token !== prepareToken) return;
+        encoded[i] = data;
+        note.textContent = "이 칸은 준비되었습니다.";
+      } catch (err) {
+        if (token !== prepareToken) return;
+        encoded[i] = "";
+        note.textContent = err && err.message === "image"
+          ? "이 사진을 읽지 못했습니다. JPG 또는 PNG로 저장한 뒤 다시 골라 주세요."
+          : "사진이 너무 큽니다. 더 작은 JPG로 다시 골라 주세요.";
+      }
+    }
+  } finally {
+    if (token === prepareToken) preparing = false;
+  }
+}
+[1, 2, 3].forEach(i => {
   document.getElementById("slide" + i).onchange = () => {
     const file = document.getElementById("slide" + i).files[0];
     const img = document.getElementById("pv" + i);
-    if (!file) return;
+    if (!file) { encoded[i - 1] = ""; document.getElementById("st" + i).textContent = ""; return; }
     img.src = URL.createObjectURL(file);
+    preparePhotos();
   };
 });
 function lines(id){ return document.getElementById(id).value.split(/\n/).map(s => s.trim()).filter(Boolean); }
