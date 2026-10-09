@@ -39,6 +39,12 @@
   .tag { display:inline-block; background:var(--accent); color:var(--ink); border-radius:999px; font-size:12px; font-weight:800; padding:2px 8px; }
   .step { border-top:2px solid var(--accent); padding-top:12px; }
   figure { margin:36px 0 0; overflow:hidden; border:1px solid var(--line); border-radius:18px; background:var(--surface); }
+  .slides { position:relative; aspect-ratio:3/1; background:#000; }
+  .slides img { position:absolute; inset:0; width:100%; height:100%; max-width:none; object-fit:cover; opacity:0; transition:opacity .7s ease; }
+  .slides img.on { opacity:1; }
+  .dots { position:absolute; z-index:2; left:16px; bottom:14px; display:flex; gap:8px; }
+  .dots button { width:12px; height:12px; border-radius:50%; border:0; padding:0; background:rgba(255,255,255,.5); }
+  .dots button.on { background:#d6ff3e; }
   .samples { display:flex; flex-wrap:wrap; gap:16px; align-items:flex-start; margin-top:28px; }
   .short { width:min(360px,100%); aspect-ratio:9/16; overflow:hidden; border:1px solid var(--line); border-radius:18px; background:#000; }
   .wide { flex:1; min-width:min(100%,420px); aspect-ratio:16/9; overflow:hidden; border:1px solid var(--line); border-radius:18px; background:#000; }
@@ -58,6 +64,7 @@
   @media (max-width:800px) {
     nav a { display:none; }
     .grid2,.grid3,.grid4,.past { grid-template-columns:1fr; }
+    .slides { aspect-ratio:16/9; }
   }
 </style>
 </head>
@@ -88,7 +95,11 @@
         <a class="btn ghost" href="#work">작업 범위</a>
       </div>
       <figure>
-        <img src="king-master-wide.jpg?v=3" alt="영상편집 King 마스터. 편하게 물어보세요. 친절하게 상담해 드립니다." />
+        <div class="slides" id="hero-slides">
+          <img class="on" src="king-master-wide.jpg?v=3" alt="영상편집 King 마스터. 편하게 물어보세요. 친절하게 상담해 드립니다." />
+          <img src="work/table.png" alt="한국인의 밥상" />
+          <img src="work/theme-trip.png" alt="세계테마기행" />
+        </div>
         <figcaption>
           <p id="t-hello" style="font-weight:800;font-size:18px;margin:0 0 8px">편하게 물어보세요. 친절하게 상담해 드립니다.</p>
           <p class="muted" id="t-career" style="margin:0">한국인의 밥상, TV는 사랑을 싣고, 6시 내고향, KBS다큐온, KBS다큐공감, 극한직업, 세계테마기행, 다큐프라임 등 방송 경력으로 최선을 다하겠습니다.</p>
@@ -330,6 +341,32 @@ fetch("site.json?v=" + Date.now()).then(r => r.json()).then(s => {
     (s.가로영상||[]).forEach(u => { const id = ytId(u); if (id) samples.appendChild(frame(id, true)); });
   }
 }).catch(() => {});
+</script>
+
+<script>
+(function(){
+  const box = document.getElementById("hero-slides");
+  if (!box) return;
+  const imgs = Array.from(box.querySelectorAll("img"));
+  const dots = document.createElement("div");
+  dots.className = "dots";
+  let n = 0;
+  function show(i){
+    n = i;
+    imgs.forEach((img, k) => img.classList.toggle("on", k === i));
+    Array.from(dots.children).forEach((b, k) => b.classList.toggle("on", k === i));
+  }
+  imgs.forEach((_, i) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = i === 0 ? "on" : "";
+    b.setAttribute("aria-label", (i + 1) + "번 사진");
+    b.onclick = () => show(i);
+    dots.appendChild(b);
+  });
+  box.appendChild(dots);
+  setInterval(() => show((n + 1) % imgs.length), 4500);
+})();
 </script>
 </body>
 </html>
