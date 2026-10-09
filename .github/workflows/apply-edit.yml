@@ -16,12 +16,30 @@ jobs:
           BODY: ${{ github.event.issue.body }}
         run: |
           python3 << 'PY'
-          import json, os, pathlib, re
+          import json, os, pathlib, re, urllib.request
           body = os.environ.get("BODY", "")
           match = re.search(r"===SITE===\s*(.*?)\s*===END===", body, re.S)
           if not match:
               raise SystemExit("site block missing")
           data = json.loads(match.group(1))
+          slides = data.get("슬라이드") or []
+          local = []
+          for i, url in enumerate(slides[:3], 1):
+              url = str(url)
+              if url.startswith("http://") or url.startswith("https://"):
+                  dest = pathlib.Path("hero") / f"{i}.jpg"
+                  dest.parent.mkdir(exist_ok=True)
+                  try:
+                      req = urllib.request.Request(url, headers={"User-Agent": "yejin"})
+                      with urllib.request.urlopen(req, timeout=30) as res:
+                          dest.write_bytes(res.read())
+                      local.append(f"hero/{i}.jpg")
+                  except Exception:
+                      local.append(url)
+              else:
+                  local.append(url)
+          if local:
+              data["슬라이드"] = local
           pathlib.Path("site.json").write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
           PY
       - name: commit
@@ -29,6 +47,7 @@ jobs:
           git config user.email "338364348+hyouklee4763@users.noreply.github.com"
           git config user.name "hyouklee4763"
           git add site.json
+          if [ -d hero ]; then git add hero; fi
           git diff --cached --quiet || git commit -m "홈페이지 글 수정"
           git push
       - name: close issue
