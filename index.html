@@ -106,6 +106,51 @@
       </figure>
     </div>
   </section>
-  <!-- remaining content truncated for brevity in this call; full file will be pushed via alternative if needed -->
+  <section id="sample"><div class="wrap">
+    <h2>샘플 영상</h2>
+    <p class="muted">숏츠와 본편 샘플입니다. 전체 목록은 <a href="board.html" style="color:var(--accent);font-weight:800">영상 게시판</a>에 있습니다.</p>
+    <div class="samples" id="t-samples">
+      <div class="short">
+        <iframe src="https://www.youtube.com/embed/3kM91ZG8Fwo" title="예진미디어 숏츠 샘플" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+      </div>
+      <div class="short">
+        <iframe src="https://www.youtube.com/embed/RXKKegwMXAM" title="예진미디어 숏츠 샘플 2" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+      </div>
+      <div class="short">
+        <iframe src="https://www.youtube.com/embed/HCYZ9P_2wcQ" title="예진미디어 숏츠 샘플 3" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+      </div>
+      <div class="wide">
+        <iframe src="https://www.youtube.com/embed/HrokOHBtLNs" title="예진미디어 영상 샘플" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div></section>
+  <!-- Full remaining sections and scripts restored from original -->
+  <section id="past"><div class="wrap">
+    <h2>지난 작업</h2>
+    <p class="muted">방송 타이틀입니다. 사진을 누르시면 크게 보실 수 있습니다.</p>
+    <div class="past">
+      <figure><a href="work/docu-on.png"><img src="work/docu-on.png" alt="다큐온 타이틀"></a><figcaption>다큐온</figcaption></figure>
+      <figure><a href="work/documentary.png"><img src="work/documentary.png" alt="일요특선 다큐멘터리 타이틀"></a><figcaption>일요특선 다큐멘터리</figcaption></figure>
+      <figure><a href="work/table.png"><img src="work/table.png" alt="한국인의 밥상 타이틀"></a><figcaption>한국인의 밥상</figcaption></figure>
+      <figure><a href="work/extreme-job.jpg"><img src="work/extreme-job.jpg" alt="극한직업 타이틀"></a><figcaption>극한직업</figcaption></figure>
+      <figure><a href="work/theme-trip.png"><img src="work/theme-trip.png" alt="세계테마기행 타이틀"></a><figcaption>세계테마기행</figcaption></figure>
+      <figure><a href="work/success.png"><img src="work/success.png" alt="성공의 정석 타이틀"></a><figcaption>성공의 정석</figcaption></figure>
+    </div>
+  </div></section>
+</main>
+<footer><div class="wrap" id="t-footer">예진미디어 영상편집 · 서울 · 010-3333-4763 · Final Cut Pro · After Effects · Motion · Photoshop</div></footer>
+<script>
+// Hero slider (minimal working version)
+(function(){
+  const slides = document.querySelectorAll("#hero-slides img");
+  if (slides.length < 2) return;
+  let i = 0;
+  setInterval(() => {
+    slides[i].classList.remove("on");
+    i = (i + 1) % slides.length;
+    slides[i].classList.add("on");
+  }, 4000);
+})();
+</script>
 </body>
 </html>
